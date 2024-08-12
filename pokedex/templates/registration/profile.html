@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil</title>
+    <style>
+        .deck {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .deck h3 {
+            margin-top: 0;
+        }
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .card-item {
+            text-align: center;
+        }
+        .card-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+    <h1>Witaj, {{ user.username }}!</h1>
+    <a href="{% url 'create_deck' %}">Stwórz nowy deck</a>
+    <h2>Twoje decki</h2>
+    <div>
+        {% for deck in decks %}
+            <div class="deck">
+                <h3>{{ deck.name }}</h3>
+                <div class="cards">
+                    {% for deck_card in deck.deck_cards.all %}
+                        <div class="card-item">
+                            {% if deck_card.image_url %}
+                                <img src="{{ deck_card.image_url }}" alt="{{ deck_card.name }}">
+                            {% else %}
+                                <p>No image available</p>
+                            {% endif %}
+                            <p>{{ deck_card.name }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <a href="{% url 'edit_deck' deck.pk %}">Edytuj</a>
+                <a href="{% url 'delete_deck' deck.pk %}">Usuń</a>
+            </div>
+        {% empty %}
+            <p>Brak decków</p>
+        {% endfor %}
+    </div>
+    <a href="{% url 'logout' %}">Wyloguj się</a>
+    <a href="{% url 'password_change' %}">Zmień hasło</a>
+</body>
+</html>

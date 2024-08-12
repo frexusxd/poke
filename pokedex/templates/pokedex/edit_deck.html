@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Deck</title>
+    <style>
+        /* Kontener główny dla całej strony */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Wyśrodkowanie w poziomie */
+            justify-content: flex-start; /* Wyrównanie do góry */
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif; /* Opcjonalnie dla lepszej czytelności */
+        }
+
+        /* Nagłówek */
+        h2 {
+            text-align: center; /* Wyśrodkowanie tekstu */
+            margin-top: 20px; /* Odstęp od góry */
+            margin-bottom: 20px; /* Odstęp od dołu */
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 5 kolumn */
+            gap: 20px; /* Odstępy między kartami */
+            margin-bottom: 20px;
+            width: 100%; /* Szerokość kontenera dopasowana do ekranu */
+            max-width: 1200px; /* Opcjonalnie, aby kontrolować maksymalną szerokość */
+        }
+
+        .card-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            flex-direction: column; /* Układ pionowy */
+            text-align: center;
+            height: 100%; /* Zapewnia, że kontener zajmuje pełną wysokość */
+        }
+
+        .card-item img {
+            width: 200px; /* Zwiększony rozmiar dla kart */
+            height: 200px; /* Zwiększony rozmiar dla kart */
+            object-fit: contain; /* Obrazek nie będzie przycinany */
+            margin-bottom: 10px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a, .pagination span {
+            margin: 0 5px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #000;
+            background-color: #ddd;
+            border-radius: 5px;
+        }
+
+        .pagination .current {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .pagination a:hover {
+            background-color: #ccc;
+        }
+
+        .main-page-button {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .main-page-button a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .main-page-button a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>available cards</h2>
+    <form method="post" action="{% url 'create_deck' %}">
+        {% csrf_token %}
+        <div class="card-container">
+            {% for card in page_obj %}
+                <div class="card-item">
+                    {% if card.image_url %}
+                        <img src="{{ card.image_url }}" alt="{{ card.name }}">
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
+                    <div>
+                        <strong>{{ card.name }}</strong><br>
+                        Type: {{ card.type }}<br>
+                        HP: {{ card.hp }}<br>
+                        Rarity: {{ card.rarity }}<br>
+                        <p>{{ card.description }}</p>
+                        <input type="checkbox" name="cards" value="{{ card.id }}"> add to deck
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit">add selected cards to deck</button>
+    </form>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <div class="main-page-button">
+        <a href="{% url 'home' %}">back to home</a>
+    </div>
+</body>
+</html>

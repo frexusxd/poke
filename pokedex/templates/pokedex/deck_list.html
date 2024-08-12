@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deck List</title>
+</head>
+<body>
+    <h1>Deck List</h1>
+    <ul>
+        {% for deck in decks %}
+            <li>{{ deck.name }} - <a href="{% url 'delete_deck' deck.pk %}">Delete</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
