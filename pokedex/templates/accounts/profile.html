@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile</title>
+</head>
+<body>
+    <h1>Profile</h1>
+    <p>Welcome, {{ user.username }}!</p>
+
+    {% for deck in user.decks.all %}
+        <div>
+            <h2>{{ deck.name }}</h2>
+            <form action="{% url 'delete_deck' deck.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Usuń</button>
+            </form>
+        </div>
+    {% endfor %}
+</body>
+</html>
